@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <style>
+   .timesAB{
+    display: none;
+   }
+   .timesBA{
+    display: none;
+   }
+   .timesABA{
+    display: none;
+   }
+  </style>
+</head>
+<body>
+ 
+  <label>Выберите направление:
+    <select class="directions">
+      <option value="1">A в B</option>
+      <option value="2">B в A</option>
+      <option value="3">A в B и обратно A</option>
+    </select>
+    <button class="selectTime">ok</button>
+  </label>
+
+  <div class="panel" id="blockAB" class="showAB">
+    <label>A в B
+      <select class="timesAB"></select>
+    </label>
+  </div>
+  <div class="panel" id="blockBA" class="showBA">
+    <label> B в A
+      <select class="timesBA"></select>
+    </label>
+  </div>
+  <div class="tickets">
+    
+  </div>
+  <div class="ticketInfo"></div>
+
+  <div class="panel" id="output"></div>
+</body>
+<script>
+  "use strict";
+    let price = 700;
+    let travelTimeMinutes = 50;
+    let dir = '';
+    let time = null;
+
+    const timesAB = [ 
+      "2021-08-21 18:00:00", 
+      "2021-08-21 18:30:00", 
+      "2021-08-21 18:45:00", 
+      "2021-08-21 19:00:00",
+      "2021-08-21 19:15:00",
+      "2021-08-21 21:00:00"
+    ] ;
+    const timesBA = [
+      "2021-08-21 18:30:00",
+      "2021-08-21 18:45:00",
+      "2021-08-21 19:00:00",
+      "2021-08-21 19:15:00",
+      "2021-08-21 19:35:00",
+      "2021-08-21 21:50:00",
+      "2021-08-21 21:55:00"
+    ];
+
+    let ab = document.querySelector(".timesAB");
+    for(let time of timesAB){
+        ab.innerHTML += `<option value="`+ time +`">`+ time +`</option>`;
+    }
+    let ba = document.querySelector(".timesBA");
+    for(let time of timesBA){
+        ba.innerHTML += `<option value="`+ time +`">`+ time +`</option>`;
+    }
+   
+    function tickets(){
+      let block = document.querySelector('.tickets');
+      block.innerHTML = `<p>введите количество билетов</p>
+                    <input type="number" class="numberOfTicket">
+                    <button class="ok">ok</button>`;
+      let btn = document.querySelector('.ok');
+      btn.addEventListener('click', ()=>{
+        let info = document.querySelector('.ticketInfo');
+        let numberOfTicket = document.querySelector('.numberOfTicket');
+        let count = numberOfTicket.value;
+        info.innerHTML = `
+        <p>${count} билета по маршруту ${dir} стоимостью ${price * count} руб.</p>
+        <p>Это путешествие займет у вас ${travelTimeMinutes} минут.</p>
+        <p>Теплоход отправляется в ${time}, а прибудет в </p>
+          `;
+      })
+    }
+
+    document.querySelector('.selectTime').addEventListener('click', ()=>{
+      let direction = document.querySelector('.directions').value;
+      if(direction == 1){
+        ab.style.display = 'block';
+        time = ab.value;
+        dir = "из А в В";
+       }
+      if(direction == 2){
+        ba.style.display = 'block';
+        time = ba.value;
+        dir = "из В в А";
+       }
+      if(direction == 3){
+        price = 1200;
+        travelTimeMinutes = travelTimeMinutes * 2;
+        dir = "из А в В и обратно";
+        ab.style.display = 'block';
+        ab.addEventListener('input',()=>{
+          time = ab.value;
+          //let b = ba.value;
+          ba.style.display = 'block';
+        })
+       }
+       tickets()
+    });
+    
+   
+    
+  </script>
+</html>
